@@ -6,7 +6,6 @@ import {brendListRequest,} from "../store/actions/device";
 
 
 const BrendBar = ({active, brendActive}) => {
-
     const dispatch = useDispatch()
 
     const {brendList} = useSelector(state => state.brend)
