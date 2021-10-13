@@ -10,7 +10,6 @@ const BrendBar = ({active, brendActive}) => {
     const dispatch = useDispatch()
 
     const {brendList} = useSelector(state => state.brend)
-
     useEffect(() => {
         dispatch(brendListRequest())
     }, [])
