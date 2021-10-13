@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, { useEffect} from 'react';
+import { useDispatch, useSelector} from "react-redux";
 import {Col, Card, Image,} from "react-bootstrap"
 import {DeviceListRequest} from "../store/actions/device";
 import img from "../imgis/2.png"
@@ -8,23 +8,14 @@ import {DEVICE_ROUTE} from "../utils/consts";
 import _ from "lodash"
 
 
-class DeviceList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            fillArr: []
-        }
+const DeviceList=({history})=>{
 
-    }
+    const dispatch=useDispatch()
+    const {deviceList}=useSelector(state => state.device)
 
-    async componentDidMount() {
-        await this.props.DeviceListRequest()
-    }
-
-
-    render() {
-        const {history} = this.props
-        const {deviceList} = this.props
+    useEffect(()=>{
+        dispatch(DeviceListRequest())
+    },[])
 
         return (
             <div className="devList">
@@ -45,22 +36,7 @@ class DeviceList extends Component {
                 ))}
             </div>
         );
-    }
+
 }
 
-
-const mapSateToProps = (state) => ({
-    deviceList: state.device.deviceList || [],
-})
-
-const mapDispatchToProps = {
-    DeviceListRequest
-}
-
-const Container = connect(
-    mapSateToProps,
-    mapDispatchToProps,
-)(DeviceList)
-
-
-export default withRouter(Container);
+export default withRouter(DeviceList);

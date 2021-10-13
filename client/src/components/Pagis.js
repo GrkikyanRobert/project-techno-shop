@@ -1,23 +1,23 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, { useEffect, } from 'react';
+import { useDispatch, useSelector} from "react-redux";
 import {Pagination} from "react-bootstrap";
 import {DeviceListRequest} from "../store/actions/device";
 
-class Pagis extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            active: 1
-        }
-    }
+const  Pagis=({active, pagisctive})=>{
 
-    async componentDidMount() {
-        await this.props.DeviceListRequest()
-    }
+    const dispatch=useDispatch()
 
 
-    render() {
-        const {totalCount, limit, active} = this.props
+
+        const{totalCount}=useSelector(state =>state.device )
+        const{limit}=useSelector(state =>state.device )
+
+
+
+    useEffect(()=>{
+        dispatch(DeviceListRequest())
+    },[])
+
 
         const pageCount = Math.ceil(totalCount / limit)
 
@@ -35,28 +35,12 @@ class Pagis extends Component {
                         key={i}
                         active={active === i}
 
-                        onClick={() => this.props.pagisctive(i)}
+                        onClick={() => pagisctive(i)}
                     >{i}</Pagination.Item>
                 ))}
 
             </Pagination>
         );
-    }
+
 }
-
-const mapSateToProps = (state) => ({
-    totalCount: state.device.totalCount,
-    limit: state.device.limit,
-})
-
-const mapDispatchToProps = {
-    DeviceListRequest
-}
-
-const Container = connect(
-    mapSateToProps,
-    mapDispatchToProps,
-)(Pagis)
-
-
-export default Container;
+export default Pagis;

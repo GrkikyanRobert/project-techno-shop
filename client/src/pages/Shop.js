@@ -1,138 +1,101 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import {Row, Col, Carousel} from "react-bootstrap";
 import TypeBar from "../components/TypeBar";
 import BrendBar from "../components/BrendBar";
 import DeviceList from "../components/DeviceList";
 import Pagis from "../components/Pagis";
-import {brendAll, brendListRequest, DeviceListRequest, typeListRequest} from "../store/actions/device";
-import memoizeOne from "memoize-one";
+import {DeviceListRequest,} from "../store/actions/device";
 import _ from "lodash";
 import img from "../imgis/2.png";
 import img5 from "../imgis/5.png";
 import About from "../components/About";
 
-class Shop extends Component {
+const Shop = () => {
 
+    const dispatch = useDispatch()
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            activeType: "",
-            activeBrend: "",
-            activePegis: 1,
-            type_id: "",
-            brend_id: "",
-            pagis_id: "",
-            filteredArr: [],
-        }
+    const {deviceList} = useSelector(state => state.device)
 
-    }
+    const [state, setState] = useState({
+        activeType: "",
+        activeBrend: "",
+        activePegis: 1,
+        type_id: "",
+        brend_id: "",
+        pagis_id: "",
+        filteredArr: [],
+    })
 
-
-    typeActive = async (i) => {
-        this.setState({
+    const typeActive =  (i) => {
+         setState({
+            ...state,
             activeType: i.id,
             type_id: i.id,
             pagis_id: 1,
             activePegis: 1
         })
-
     }
 
-    brendActive = async (i) => {
-
-        this.setState({
+    const brendActive =  (i) => {
+         setState({
+            ...state,
             activeBrend: i.id,
             brend_id: i.id
         })
 
     }
-    pagisctive = async (i) => {
+    const pagisctive = (i) => {
 
-
-        this.setState({
+        setState({
+            ...state,
             activePegis: i,
             pagis_id: i
         })
     }
 
+    useEffect(() => {
 
-    fetchDeviceInfo = memoizeOne(async (x, y, z, f) => {
+        const {type_id, brend_id, pagis_id,} = state
 
+        dispatch(DeviceListRequest(brend_id, type_id, pagis_id))
 
+    }, [state.type_id, state.brend_id, state.pagis_id])
 
-            await this.props.DeviceListRequest(y, x, z, f)
+    return (
+        <div className="Container">
+            <Row className="mt-2">
+                <Col className="blockRight" md={3}>
+                    <TypeBar typeActive={typeActive} active={state.activeType}/>
+                    <img className="advertisement" src={img5} alt=""/>
+                </Col>
+                <Col md={7}>
+                    <BrendBar brendActive={brendActive} active={state.activeBrend}/>
+                    <DeviceList/>
 
-    },_.isEqual)
+                    <Pagis pagisctive={pagisctive} active={state.activePegis}/>
 
+                </Col>
+                <Col className="blockRight" md={2}>
 
-    render() {
-        const {type_id, brend_id, pagis_id,} = this.state
-        const {limit, deviceList,} = this.props
+                    <About/>
 
+                    <Carousel className='Carousel'>
 
-        this.fetchDeviceInfo(type_id, brend_id, pagis_id, limit)
+                        {_.map(deviceList, (i) => (
+                            <Carousel.Item interval={1000} key={i.id}>
+                                <img alt="" className={"d-block w-100 "} src={i.img}/>
+                            </Carousel.Item>
+                        ))}
 
-        return (
-            <div className="Container">
-                <Row className="mt-2">
-                    <Col className="blockRight" md={3}>
-                        <TypeBar typeActive={this.typeActive} active={this.state.activeType}/>
-                        <img className="advertisement" src={img5} alt=""/>
-                    </Col>
-                    <Col md={7}>
-                        <BrendBar brendActive={this.brendActive} active={this.state.activeBrend}/>
-                        <DeviceList/>
-
-                        <Pagis pagisctive={this.pagisctive} active={this.state.activePegis}/>
-
-                    </Col>
-                    <Col className="blockRight" md={2}>
-
-                        <About/>
-
-                        <Carousel className='Carousel'>
-
-                            {_.map(deviceList, (i) => (
-                                <Carousel.Item interval={1000} key={i.id}>
-                                    <img alt="" className={"d-block w-100 "} src={i.img}/>
-                                </Carousel.Item>
-                            ))}
-
-                        </Carousel>
-                    </Col>
-                </Row>
-            </div>
-        );
-    }
+                    </Carousel>
+                </Col>
+            </Row>
+        </div>
+    );
 }
 
-const mapSateToProps = (state) => ({
-    deviceList: state.device.deviceList,
-    typeList: state.device.typeList,
-    brendList: state.brend.brendList,
-    totalCount: state.device.totalCount,
-    page: state.device.page,
-    limit: state.device.limit,
-    offset: state.device.offset,
-    brendAll: state.brend.brendAll,
+
+export default Shop;
 
 
-})
-
-const mapDispatchToProps = {
-    brendListRequest,
-    typeListRequest,
-    DeviceListRequest,
-    brendAll
-
-}
-
-const Containers = connect(
-    mapSateToProps,
-    mapDispatchToProps,
-)(Shop)
-
-
-export default Containers;

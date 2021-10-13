@@ -12,7 +12,7 @@ import {
     BASKETADMIN_REQUEST,
     BASKETADMIN_SUCCESS,
     All_RATE_DEVICE_SUCCESS,
-    BASKETADMIN_SUCCESS_GET,
+    BASKETADMIN_SUCCESS_GET, CREATE_DEVICE_REQUEST,
 
 
 } from "../actions/device";
@@ -116,11 +116,19 @@ export default function reducer(state = initialState, action) {
         }
 
 
+        case CREATE_DEVICE_REQUEST: {
+            return {
+                ...state,
+                deviceListError:""
+
+            }
+        }
+
+
         case CREATE_DEVICE_SUCCESS: {
             const {device} = action.payload.data;
             return {
                 ...state,
-                deviceListError: "",
                 createDevice: device,
 
             }

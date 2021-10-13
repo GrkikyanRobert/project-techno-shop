@@ -1,39 +1,42 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
-import {AddToCart, removeItem} from "../store/actions/device";
+import React from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {removeItem} from "../store/actions/device";
 import {createBasket} from "../store/actions/basket";
 
-class Basket extends Component {
+const Basket = () => {
 
 
-    deleteProduct = (id) => {
+    const dispatch = useDispatch()
 
-        this.props.removeItem(id)
+
+    const {product} = useSelector(state => state.toCart)
+    const {myAccount} = useSelector(state => state.loginins)
+
+
+    const deleteProduct = (id) => {
+        dispatch(removeItem(id))
     }
 
-    postPraduct=(delId)=>{
-       const {id, phone}=this.props.myAccount
-
-      this.props.createBasket(1,delId.id,id,phone)
-
-        this.props.removeItem(delId.id)
+    const postPraduct = (delId) => {
+        const {id, phone} = myAccount
+        dispatch(createBasket(1, delId.id, id, phone))
+        dispatch(removeItem(delId.id))
     }
 
 
-    render() {
-        const {product} = this.props
-
-        return (
-            <div>
-                {product.length? <div className="col-lg-12">
+    return (
+        <div>
+            {product.length
+                ?
+                <div className="col-lg-12">
                     <div className="shoping__cart__table">
                         <table className={"table-of-cart"}>
                             <thead>
-                            <tr >
-                                <th style={{paddingLeft:20}} >название</th>
-                                <th style={{paddingLeft:20}}  className="shoping__product">изображение </th>
-                                <th style={{paddingLeft:20}} >цена</th>
-                                <th style={{paddingLeft:20}} >Удалять</th>
+                            <tr>
+                                <th style={{paddingLeft: 20}}>название</th>
+                                <th style={{paddingLeft: 20}} className="shoping__product">изображение</th>
+                                <th style={{paddingLeft: 20}}>цена</th>
+                                <th style={{paddingLeft: 20}}>Удалять</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -41,7 +44,6 @@ class Basket extends Component {
                                 product.map((item) => (
                                     <tr key={Math.random() * 1000000}>
                                         <td className="shoping__cart__item">
-
                                             <h5>{item.name}</h5>
                                         </td>
                                         <td className="shoping__cart__price">
@@ -49,59 +51,32 @@ class Basket extends Component {
                                         </td>
                                         <td className="shoping__cart__item__close">
                                             <span className=""><i
-                                                // onClick={() =>removeItem(item.title)}
                                                 className="fa fa-remove"/> {item.price} Руб
                                             </span>
                                         </td>
                                         <td className="shoping__cart__item__close">
-                                            <span onClick={()=>this.deleteProduct(item.id)} className=""><i
-                                                // onClick={() =>removeItem(item.title)}
+                                            <span onClick={() => deleteProduct(item.id)} className=""><i
                                                 className="fa fa-remove"/>   X</span>
 
                                         </td>
-
                                         <td className="shoping__cart__item__close">
-                                            <button onClick={()=>this.postPraduct(item)} className="button buy">Заказ</button>
-
+                                            <button onClick={() => postPraduct(item)} className="button buy">Заказ</button>
                                         </td>
-
-
                                     </tr>
-
                                 ))
                             }
-
                             </tbody>
                         </table>
                     </div>
-                </div>:
-                    <div className={"emptyCart"} >
-                        <img src="https://rokket.ru/media/img/cart_empty.png" alt=""/>
-                    </div>
+                </div>
+                :
+                <div className={"emptyCart"}>
+                    <img src="https://rokket.ru/media/img/cart_empty.png" alt=""/>
+                </div>
+            }
+        </div>
+    );
 
-                }
-
-            </div>
-        );
-    }
 }
 
-const mapSateToProps = (state) => ({
-    product: state.toCart.product,
-    myAccount: state.loginins.myAccount,
-})
-
-const mapDispatchToProps = {
-    AddToCart,
-    removeItem,
-    createBasket
-}
-
-const Container = connect(
-    mapSateToProps,
-    mapDispatchToProps,
-)(Basket)
-
-
-export default Container;
-
+export default Basket;

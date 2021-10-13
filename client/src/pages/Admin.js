@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, { useState} from 'react';
+import { useSelector} from "react-redux";
 import {Container, Button} from "react-bootstrap";
 import CreateType from "../components/modals/CreateType";
 import CreateBrand from "../components/modals/CreateBrand";
@@ -8,98 +8,80 @@ import DeleteDevice from "../components/modals/DeleteDevice";
 import {Link} from "react-router-dom";
 import {ADMIN_HISTORY,} from "../utils/consts";
 
-class Admin extends Component {
-    constructor(props) {
-        super(props);
-        this.state = ({
-            brandVisible: false,
-            typeVisible: false,
-            deviceVisible: false,
-            deleteDeviceId: false,
-        })
-    }
+ const Admin=()=> {
 
-    render() {
-        const {myAccount}=this.props
-        const {brandVisible, typeVisible, deviceVisible,deleteDeviceId} = this.state
+     const [brandVisible, setBrandVisible]=useState(false)
+     const [typeVisible, setTypeVisible]=useState(false)
+     const [deviceVisible, setDeviceVisible]=useState(false)
+     const [deleteDeviceId, setDeleteDeviceId]=useState(false)
 
+
+
+   const {myAccount}= useSelector(state => state.loginins )
 
 
         return (
 
+            <div>
+                {myAccount.role ==="ADMIN" ?     <Container className="d-flex flex-column">
+                    <Button
+                        variant={"outline-dark"}
+                        className="mt-4 p-2"
+                        onClick={() => setTypeVisible(true)}
+                    >
+                        Добавить тип
+                    </Button>
 
-          <div>
-              {myAccount.role ==="ADMIN" ?     <Container className="d-flex flex-column">
-                  <Button
-                      variant={"outline-dark"}
-                      className="mt-4 p-2"
-                      onClick={() => this.setState({typeVisible: true})}
-                  >
-                      Добавить тип
-                  </Button>
+                    <Button
+                        variant={"outline-dark"}
+                        className="mt-4 p-2"
+                        onClick={() => setBrandVisible(true)}
+                    >
+                        Добавить бренд
+                    </Button>
 
-                  <Button
-                      variant={"outline-dark"}
-                      className="mt-4 p-2"
-                      onClick={() => this.setState({brandVisible: true})}
-                  >
-                      Добавить бренд
-                  </Button>
+                    <Button
+                        variant={"outline-dark"}
+                        className="mt-4 p-2"
+                        onClick={() => setDeviceVisible(true)}
+                    >
+                        Добавить устройство
+                    </Button>
+                    <Button
+                        variant={"outline-dark"}
+                        className="mt-4 p-2"
+                        onClick={() => setDeleteDeviceId(true)}
+                    >
+                        Удалить устройство
+                    </Button>
 
-                  <Button
-                      variant={"outline-dark"}
-                      className="mt-4 p-2"
-                      onClick={() => this.setState({deviceVisible: true})}
-                  >
-                      Добавить устройство
-                  </Button>
-                  <Button
-                      variant={"outline-dark"}
-                      className="mt-4 p-2"
-                      onClick={() => this.setState({deleteDeviceId: true})}
-                  >
-                      Удалить устройство
-                  </Button>
-
-                  <Link
-                      variant={"outline-dark"}
-                      className="btn btn-success mt-lg-4"
-                      to="adminBasket"
-                  >
-                      Заказы
-                  </Link>
-                  <Link
-                      variant={"outline-dark"}
-                      className="btn btn-success mt-lg-4"
-                      to={ADMIN_HISTORY}
-                  >
-                      История заказов
-                  </Link>
+                    <Link
+                        variant={"outline-dark"}
+                        className="btn btn-success mt-lg-4"
+                        to="adminBasket"
+                    >
+                        Заказы
+                    </Link>
+                    <Link
+                        variant={"outline-dark"}
+                        className="btn btn-success mt-lg-4"
+                        to={ADMIN_HISTORY}
+                    >
+                        История заказов
+                    </Link>
 
 
-                  <CreateBrand show={brandVisible} onHide={() => this.setState({brandVisible: false})}/>
-                  <CreateDevice show={deviceVisible} onHide={() => this.setState({deviceVisible: false})}/>
-                  <CreateType show={typeVisible} onHide={() => this.setState({typeVisible: false})}/>
-                  <DeleteDevice show={deleteDeviceId} onHide={() => this.setState({deleteDeviceId: false})}/>
-              </Container>   :null}
-          </div>
+                    <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)}/>
+                    <CreateDevice show={deviceVisible} onHide={() => setDeviceVisible(false)}/>
+                    <CreateType show={typeVisible} onHide={() => setTypeVisible(false)}/>
+                    <DeleteDevice show={deleteDeviceId} onHide={() => setDeleteDeviceId(false)}/>
+                </Container>   :null}
+            </div>
 
         );
-    }
-}
-
-const mapSateToProps = (state) => ({
-    myAccount: state.loginins.myAccount,
-})
-
-const mapDispatchToProps = {
 
 }
 
-const Containers = connect(
-    mapSateToProps,
-    mapDispatchToProps,
-)(Admin)
 
+export default Admin;
 
-export default Containers;

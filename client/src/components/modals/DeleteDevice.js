@@ -1,47 +1,37 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, { useEffect, useState} from 'react';
+import { useDispatch, useSelector} from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import {Button, Dropdown, Form, Image,} from "react-bootstrap";
 import {Deletedevice, DeviceListRequest,} from "../../store/actions/device";
 
-class DeleteDevice extends Component {
+const  DeleteDevice=({show, onHide,})=>{
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            deviceName: "",
-            deviceId: "",
-            deviceImg: ""
-        }
-    }
+    const dispatch = useDispatch()
 
+    const {deviceList}=useSelector(state => state.device)
 
-    async componentDidMount() {
-
-        await this.props.DeviceListRequest()
-
-    }
+    const [deviceName ,setDeviceName]=useState("")
+    const [deviceId ,setDeviceId]=useState("")
+    const [deviceImg ,setDeviceImg]=useState("")
 
 
-    render() {
+    useEffect(()=>{
+        dispatch(DeviceListRequest())
+    },[])
 
-        this.olldevice = (i) => {
-            this.setState({
-                deviceName: i.name,
-                deviceId: i.id,
-                deviceImg: i.img
-            })
+
+        const olldevice = (i) => {
+            setDeviceName(i.name)
+            setDeviceId(i.id)
+            setDeviceImg(i.img)
         }
 
-        this.del_Device = async () => {
-            const {deviceId,} = this.state
-            await this.props.Deletedevice(deviceId)
-            await this.props.DeviceListRequest()
+        const  del_Device = async () => {
+            dispatch(Deletedevice(deviceId))
+            dispatch(DeviceListRequest())
         }
 
 
-        const {show, onHide, deviceList} = this.props
-        const {deviceName, deviceImg} = this.state
         return (
             <Modal
                 show={show}
@@ -60,7 +50,7 @@ class DeleteDevice extends Component {
                             <Dropdown.Menu>
                                 {deviceList.map(i => (
                                     <Dropdown.Item
-                                        onClick={() => this.olldevice(i)}
+                                        onClick={() => olldevice(i)}
                                         key={i.id}>
                                         {i.name}
                                     </Dropdown.Item>
@@ -74,27 +64,14 @@ class DeleteDevice extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
-                    <Button variant="outline-success" onClick={this.del_Device}>удалить</Button>
+                    <Button variant="outline-success" onClick={del_Device}>удалить</Button>
                 </Modal.Footer>
             </Modal>
         );
-    }
+
 }
 
-const mapSateToProps = (state) => ({
-    deviceList: state.device.deviceList || [],
-    DeleteDeviceId: state.device.DeleteDeviceId,
-})
-
-const mapDispatchToProps = {
-    Deletedevice,
-    DeviceListRequest,
-}
-
-const Container = connect(
-    mapSateToProps,
-    mapDispatchToProps,
-)(DeleteDevice)
 
 
-export default Container;
+
+export default DeleteDevice;

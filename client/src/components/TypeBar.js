@@ -1,25 +1,21 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, {useEffect} from 'react';
+import { useDispatch, useSelector} from "react-redux";
 import ListGroup from "react-bootstrap/ListGroup"
-import {DeviceListRequest, typeListRequest} from "../store/actions/device";
+import { typeListRequest} from "../store/actions/device";
 
-class TypeBar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            active: "",
-            type_id: ""
-        }
+const TypeBar=({active, typeActive})=> {
 
-    }
+    const dispatch=useDispatch()
 
-    async componentDidMount() {
-        await this.props.typeListRequest()
-    }
 
-    render() {
-        const {typeList} = this.props
-        const {active} = this.props
+    const {typeList} = useSelector(state => state.device)
+
+    useEffect(()=>{
+        dispatch(typeListRequest())
+    },[])
+
+
+
 
         return (
             <ListGroup>
@@ -27,7 +23,7 @@ class TypeBar extends Component {
                     <ListGroup.Item key={i.id}
 
                                     style={{cursor: "pointer"}}
-                                    onClick={() => this.props.typeActive(i)}
+                                    onClick={() => typeActive(i)}
                                     active={i.id === active}
 
                     >{i.name}</ListGroup.Item>
@@ -36,24 +32,7 @@ class TypeBar extends Component {
 
             </ListGroup>
         );
-    }
+
 }
 
-const mapSateToProps = (state) => ({
-    typeList: state.device.typeList,
-    page: state.device.page,
-})
-
-const mapDispatchToProps = {
-    typeListRequest,
-
-    DeviceListRequest
-}
-
-const Container = connect(
-    mapSateToProps,
-    mapDispatchToProps,
-)(TypeBar)
-
-
-export default Container;
+export default TypeBar;

@@ -51,12 +51,13 @@ class Api {
             params: {id}
         })
     }
+
     static delete(id) {
-        return api.post("/device/del",{id})
+        return api.post("/device/del", {id})
     }
 
-    static registr(email, password,phone) {
-        return api.post('/user/registration', {email, password,phone, role: "USER"})
+    static registr(email, password, phone) {
+        return api.post('/user/registration', {email, password, phone, role: "USER"})
     }
 
     static login(email, password) {
@@ -67,8 +68,8 @@ class Api {
         return api.get('/user/auth')
     }
 
-    static basketCreateApi(count,praductId,userId,phone) {
-        return api.post('/device/basket',{count,praductId,userId,phone})
+    static basketCreateApi(count, praductId, userId, phone) {
+        return api.post('/device/basket', {count, praductId, userId, phone})
     }
 
     static basketAllApi() {
@@ -76,8 +77,8 @@ class Api {
     }
 
 
-    static CreateRateDevice(  userId, deviceId) {
-        return api.post('/device/rate',{  userId, deviceId})
+    static CreateRateDevice(userId, deviceId) {
+        return api.post('/device/rate', {userId, deviceId})
     }
 
     static CreateRateDeviceall() {
@@ -86,7 +87,7 @@ class Api {
 
 
     static UpdateRateDevice(id) {
-        return api.put('/device/updateId',{id})
+        return api.put('/device/updateId', {id})
     }
 
 

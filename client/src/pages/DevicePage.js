@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {Container, Row, Col, Image, Card, Button} from "react-bootstrap";
 import {
@@ -7,73 +7,56 @@ import {
     DeviceInfoRequest,
     UpdateRateDeviceOne
 } from "../store/actions/device";
-import memoizeOne from "memoize-one"
 import img from "../imgis/4.png"
 import _ from 'lodash'
-import { SHOP_ROUTE} from "../utils/consts";
+import {SHOP_ROUTE} from "../utils/consts";
 
-class DevicePage extends Component {
-    constructor() {
-        super();
-        this.state = {
-            isAdded: false
-        }
-    }
+const DevicePage = (props) => {
 
-    async componentDidMount() {
+    const [isAdded, setIsAdded] = useState(false)
 
-        const {id} = this.props.match.params
+    useEffect(() => {
+        const {id} = props.match.params
         if (id) {
-            await this.props.DeviceInfoRequest(id)
+            props.DeviceInfoRequest(id)
         }
-        await   this.props.CreateRateDeviceAll()
-    }
+        props.CreateRateDeviceAll()
+    }, [])
 
+    const addToCart = (item) => {
 
-    fetchDeviceInfo = memoizeOne((id) => {
-        if (id) {
-            this.props.DeviceInfoRequest(id)
-        }
-    }, _.isEqual)
-
-
-    addToCart = (item) => {
-
-
-        const {product} = this.props
-
-        if (!product.length) {
-            this.props.AddToCart(item)
-            this.props.history.push(SHOP_ROUTE)
+        if (!props.product.length) {
+            props.AddToCart(item)
+            props.history.push(SHOP_ROUTE)
         } else {
             const isFound = () => {
-                for (let i = 0; i < product.length; i++) {
-                    if (product[i].name === item.name) {
+                for (let i = 0; i < props.product.length; i++) {
+                    if (props.product[i].name === item.name) {
                         return false
                     }
                 }
                 return true;
             }
             if (isFound()) {
-                this.props.AddToCart(item)
+                props.AddToCart(item)
 
-                this.props.history.push(SHOP_ROUTE)
+                props.history.push(SHOP_ROUTE)
             } else {
-                this.setState({isAdded: true})
+                setIsAdded(true)
                 setTimeout(() => {
-                    this.setState({isAdded: false})
+                    setIsAdded(false)
                 }, 2000)
             }
         }
     }
 
-    updateReting = async () => {
-        const {id} = this.props.deviceInfo
-        const {rate, myAccount} = this.props
+    const updateReting = async () => {
+        console.log(1111)
+        const {id} = props.deviceInfo
 
-        const tryFind =  () => {
-            for (let i = 0; i < rate.length; i++) {
-                if (id === rate[i].deviceId && myAccount.id === rate[i].userId) {
+        const tryFind = () => {
+            for (let i = 0; i < props.rate.length; i++) {
+                if (id === props.rate[i].deviceId && props.myAccount.id === props.rate[i].userId) {
                     return false
                 }
             }
@@ -81,84 +64,68 @@ class DevicePage extends Component {
         }
 
         if (tryFind()) {
-            await this.props.CreateRateDeviceOne(myAccount.id, id)
-            await this.props.UpdateRateDeviceOne(id)
-            await this.props.DeviceInfoRequest(id)
-
+            await props.CreateRateDeviceOne(props.myAccount.id, id)
+            await props.UpdateRateDeviceOne(id)
+            await props.DeviceInfoRequest(id)
         }
-        await this.props.DeviceInfoRequest(id)
-        await   this.props.CreateRateDeviceAll()
-
-
-        return
-
+        await props.DeviceInfoRequest(id)
+        await props.CreateRateDeviceAll()
     }
 
-    render() {
+    return (
+        <div>
+            <Container>
+                <Row style={{paddingTop: 50,}}>
+                    <Col md={4}>
+                        <Image width={300} height={300} src={props.deviceInfo?.img}/>
+                    </Col>
+                    <Col md={4}>
+                        <Row className="d-flex flex-column align-items-center">
+                            <h2>{props.deviceInfo?.name}</h2>
+                            <div
+                                onClick={updateReting}
+                                className="d-flex align-items-center justify-content-center"
+                                style={{
+                                    background: `url(${img}) no-repeat center center`,
+                                    width: 240,
+                                    height: 240,
+                                    backgroundSize: 'cover',
+                                    fontSize: 64,
+                                    cursor: "pointer"
 
-        const {deviceInfo} = this.props
-        const {isAdded} = this.state
+                                }}>
+                                {props.deviceInfo?.rating}
+                            </div>
+                        </Row>
+                    </Col>
+                    <Col md={4}>
+                        <Card
+                            className="d-flex flex-column align-items-center justify-content-around"
+                            style={{width: 300, height: 300, fontSize: 32, border: '5px solid lightgray'}}
+                        >
+                            <h3> ОТ: {props.deviceInfo?.price} руб</h3>
+                            <Button onClick={() => addToCart(props.deviceInfo)} variant={"outline-dark"}>Добавить в
+                                корзину</Button>
+                            {isAdded ?
+                                <div className={"isAdded"}>Вы уже добавили этот продукт в корзину</div> : null}
 
+                        </Card>
+                    </Col>
+                </Row>
+                <Row className="d-flex flex-column m-3">
+                    <h1>Характеристики</h1>
+                    {_.map(props.deviceInfo?.info, (info, index) =>
+                        <Row key={info.id}
+                             style={{background: index % 2 === 0 ? 'lightgray' : 'transparent', padding: 10}}>
+                            {info.title}: {info.description}
+                        </Row>
+                    )}
+                </Row>
 
-        const {id} = this.props.match.params
+            </Container>
+        </div>
+    );
 
-        this.fetchDeviceInfo(id)
-
-        return (
-            <div>
-
-                <Container>
-                    <Row style={{paddingTop: 50,}}>
-                        <Col md={4}>
-                            <Image width={300} height={300} src={deviceInfo?.img}/>
-                        </Col>
-                        <Col md={4}>
-                            <Row className="d-flex flex-column align-items-center">
-                                <h2>{deviceInfo?.name}</h2>
-                                <div
-                                    onClick={this.updateReting}
-                                    className="d-flex align-items-center justify-content-center"
-                                    style={{
-                                        background: `url(${img}) no-repeat center center`,
-                                        width: 240,
-                                        height: 240,
-                                        backgroundSize: 'cover',
-                                        fontSize: 64,
-                                        cursor:"pointer"
-
-                                    }}>
-                                    {deviceInfo?.rating}
-                                </div>
-                            </Row>
-                        </Col>
-                        <Col md={4}>
-                            <Card
-                                className="d-flex flex-column align-items-center justify-content-around"
-                                style={{width: 300, height: 300, fontSize: 32, border: '5px solid lightgray'}}
-                            >
-                                <h3> ОТ: {deviceInfo?.price} руб</h3>
-                                <Button onClick={() => this.addToCart(deviceInfo)} variant={"outline-dark"}>Добавить в
-                                    корзину</Button>
-                                {isAdded ?
-                                    <div className={"isAdded"}>Вы уже добавили этот продукт в корзину</div> : null}
-
-                            </Card>
-                        </Col>
-                    </Row>
-                    <Row className="d-flex flex-column m-3">
-                        <h1>Характеристики</h1>
-                        {_.map(deviceInfo?.info, (info, index) =>
-                            <Row key={info.id}
-                                 style={{background: index % 2 === 0 ? 'lightgray' : 'transparent', padding: 10}}>
-                                {info.title}: {info.description}
-                            </Row>
-                        )}
-                    </Row>
-
-                </Container>
-            </div>
-        );
-    }
 }
 
 const mapSateToProps = (state) => ({
