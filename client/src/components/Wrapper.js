@@ -4,18 +4,18 @@ import {Switch, Route} from "react-router-dom"
 import {authRoutes, publicRoutes} from "../routes";
 import {IsAuthRequest} from "../store/actions/user";
 
-const Wrapper =(props) => {
-        return (
-            <Switch>
-                {props.token && authRoutes.map(({path, Component}) =>
+const Wrapper = (props) => {
+    return (
+        <Switch>
+            {props.token && authRoutes.map(({path, Component}) =>
+                <Route key={path} path={path} component={Component} exact/>
+            )}
+            {
+                !props.token && publicRoutes.map(({path, Component}) =>
                     <Route key={path} path={path} component={Component} exact/>
                 )}
-                {
-                    !props.token && publicRoutes.map(({path, Component}) =>
-                    <Route key={path} path={path} component={Component} exact/>
-                )}
-            </Switch>
-        );
+        </Switch>
+    );
 }
 
 const mapSateToProps = (state) => ({

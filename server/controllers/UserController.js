@@ -1,5 +1,5 @@
 import HttpError from 'http-errors';
-import {Basket, Device, DeviceInfo, Type, User} from "../models/index";
+import {User} from "../models/index";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 

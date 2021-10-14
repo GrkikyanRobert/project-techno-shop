@@ -28,13 +28,9 @@ export default function reducer(state = initialState, action) {
                 userList: myAccount,
                 token,
                 myAccount
-
             }
         }
-
         case LOGIN_FAIL: {
-
-
 
             return {
                 ...state,
@@ -42,7 +38,6 @@ export default function reducer(state = initialState, action) {
 
             }
         }
-
 
         default: {
             return state;
