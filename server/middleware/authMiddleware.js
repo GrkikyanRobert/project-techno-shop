@@ -43,7 +43,7 @@ const EXCLUDE = [
     "/device/basketAdmin",
     "/device/rate",
     "/device/updateId",
-
+    "/user/refresh_token",
 ];
 
 export default function authorization(req, res, next) {
@@ -56,26 +56,18 @@ export default function authorization(req, res, next) {
         }
         let token;
         if (authorization) {
-
             token = authorization.replace('Bearer ', '');
-
         } else {
-            throw HttpError(403, {errors: {noToken: 'Please login to view this'}});
+            throw HttpError(401, {errors: {noToken: 'Please login to view this'}});
         }
-        // const token = (authorization || '').replace('Bearer ', '');
-        if (token) {
-            const user = jwt.verify(token, SECRET_KEY);
-
-            req.userId = user.id
-            global.userId=user.id
-            console.log(global.userId, 99899)
-        }
-
-
-        if (!req.userId) {
-            throw HttpError(401, 'invalid token');
-        }
-        next();
+        jwt.verify(token, SECRET_KEY, (err, data) => {
+            if (!err) {
+                req.userId = data.id
+                next();
+            } else {
+                throw HttpError(401, 'invalid token');
+            }
+        });
     } catch (e) {
         next(e);
     }

@@ -40,7 +40,7 @@ function* registreshen(action) {
 function* login(action) {
     try {
         const {email, password,} = action.payload
-        const {data} = yield call(Api.login, email, password,)
+        const {data} = yield call(Api.login, email, password)
 
         yield  put({
             type: LOGIN_SUCCESS,

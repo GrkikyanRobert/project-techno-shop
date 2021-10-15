@@ -1,17 +1,42 @@
 import axios from "axios";
 import toFormData from "object-to-formdata"
+import Storage from "./helpers/Account"
 
 const api = axios.create({
     baseURL: "http://localhost:5000"
 })
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    const token = Storage.getToken('token');
     if (token) {
         config.headers.authorization = token;
     }
     return config;
 });
+
+
+
+api.interceptors.response.use((response) => {
+        return response;
+    }, async (error) => {
+        const originalRequest = error.config;
+        const refreshToken = Storage.getResetToken();
+        if (refreshToken && error.response && error.response.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const res = await api.post("/user/refresh_token", {refreshToken});
+                if (res.status === 200) {
+                    const {accessToken} = res.data;
+                    Storage.setToken(accessToken);
+                    return api(originalRequest);
+                }
+            } catch (_error) {
+                return Promise.reject(_error);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
 
 
 class Api {
@@ -98,6 +123,7 @@ class Api {
     static UpdatebasketAdminGet() {
         return api.get('/device/basketAdmin')
     }
+
 
 }
 

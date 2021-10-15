@@ -15,9 +15,11 @@ async function main() {
     ];
     for (const i in models) {
         console.log('--->', i);
-        await models[i].sync({ alter: true });
+          await models[i].sync({ alter: true });
+        // await models[i].sync({ alter: true,force: false });
     }
     process.exit();
 }
 
 main().catch(e=>console.log(e));
+// await sequelize.sync({ alter: false, force: false });

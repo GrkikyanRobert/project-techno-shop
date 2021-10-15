@@ -1,10 +1,9 @@
-import {json, literal} from "sequelize";
+import { literal} from "sequelize";
 import Promise from 'bluebird';
 
 const uuid = require('uuid')
-import path from "path";
-import _ from 'lodash';
-import {Basket, Brand, Device, DeviceInfo, BasketAdmin, Rating, Type, User} from "../models/index";
+
+import {Basket,  Device, DeviceInfo, BasketAdmin, Rating,} from "../models/index";
 import fs from "fs";
 import HttpError from "http-errors";
 
@@ -14,8 +13,6 @@ import HttpError from "http-errors";
         try {
             const {name, price, brandId, typeId, info,} = req.body;
             const img = req.file;
-            console.log(req.file)
-
 
             if (!name || !price || !brandId || !typeId) {
                 throw HttpError(403, {errors: `ошибка -  Заполните все поля  или  дублокация названия`});
@@ -239,9 +236,6 @@ import HttpError from "http-errors";
     }
 
 
-
-
-
     static CreateRateDevice = async (req, res, next) => {
 
         try {
@@ -289,10 +283,6 @@ import HttpError from "http-errors";
 
 
 
-            // const RatingUpdate = await User.findOne({where:{userId:req.userId}})
-            // if(RatingUpdate){
-            //     throw HttpError(404, { errors :'Неdddfsdfsdf !'})
-            // }
 
             await Device.update({
                 rating: literal(`rating + 1`)
@@ -302,7 +292,6 @@ import HttpError from "http-errors";
                 }
             })
             res.json({
-                // RatingUpdate,
                 status: "ok",
 
             })

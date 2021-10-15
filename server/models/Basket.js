@@ -10,23 +10,23 @@ class Basket extends Model {
 
 Basket.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true
     },
     count: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
     },
     userId:{
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: true,
     },
     praductId:{
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: true,
     },
     phone:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.BIGINT,
 
     }
 

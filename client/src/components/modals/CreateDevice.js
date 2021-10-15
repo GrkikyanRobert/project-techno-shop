@@ -18,7 +18,6 @@ const CreateDevice = ({show, onHide}) => {
     useEffect(() => {
         dispatch(brendListRequest())
         dispatch(typeListRequest())
-        console.log(deviceListError,88888)
     }, [])
 
 
@@ -28,9 +27,6 @@ const CreateDevice = ({show, onHide}) => {
     const [BrendId, setBrendId] = useState("")
     const [formData, setFormData] = useState({})
     const [info, setInfo] = useState([])
-
-
-
 
 
     const addInfo = () => {
@@ -45,7 +41,6 @@ const CreateDevice = ({show, onHide}) => {
     }
 
     const changeInfo = (key, value, number) => {
-        console.log(key, value, number,"kkkkk vvv nnnn")
         const x = info.map((i) => i.number === number ? {...i, [key]: value} : i)
         setInfo(x)
     }
@@ -66,21 +61,19 @@ const CreateDevice = ({show, onHide}) => {
 
 
     const handleChange = (path, ev) => {
-        console.log(path, ev,8888)
         _.set(formData, path, ev);
         setFormData(formData)
     }
 
-    const addDevice =  () => {
+    const addDevice = async () => {
         _.set(formData, 'info', JSON.stringify(info));
         _.set(formData, 'typeId', TypeId);
         _.set(formData, 'brandId', BrendId);
-         dispatch(createDeviceRequest(formData))
-        console.log(formData)
-        if (deviceListError){
-            onHide()
-        }
+       await dispatch(createDeviceRequest(formData))
     }
+
+
+
 
 
     return (

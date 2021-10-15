@@ -8,7 +8,7 @@ class Users extends Model {
 
 Users.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true
     },
@@ -30,6 +30,10 @@ Users.init({
     phone: {
         type: DataTypes.INTEGER,
          allowNull: false,
+    },
+    refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 }, {
     sequelize: db,

@@ -12,7 +12,7 @@ class Device extends Model {
 
 Device.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true
     },
@@ -22,11 +22,11 @@ Device.init({
         allowNull: false
     },
     price: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false
     },
     rating: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         defaultValue: 0
     },
     img: {

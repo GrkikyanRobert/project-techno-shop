@@ -51,7 +51,6 @@ const DevicePage = (props) => {
     }
 
     const updateReting = async () => {
-        console.log(1111)
         const {id} = props.deviceInfo
 
         const tryFind = () => {

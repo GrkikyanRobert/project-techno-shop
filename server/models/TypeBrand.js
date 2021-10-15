@@ -1,15 +1,13 @@
 import {Model, DataTypes} from 'sequelize';
 
 import db from '../services/db';
-import {Type, Brand} from "./index";
-
 class TypeBrand extends Model {
 
 }
 
 TypeBrand.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true
     },
